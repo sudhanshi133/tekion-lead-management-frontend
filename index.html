@@ -13,11 +13,15 @@
             <div class="container">
                 <div class="header-content">
                     <h1 class="logo">
-                        <span class="logo-icon">🚗</span>
+                        <svg class="logo-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 17h14v-5H5v5zm7-13c-3.87 0-7 3.13-7 7h14c0-3.87-3.13-7-7-7z"/>
+                            <circle cx="7.5" cy="18.5" r="1.5"/>
+                            <circle cx="16.5" cy="18.5" r="1.5"/>
+                        </svg>
                         Tekion Lead Manager
                     </h1>
                     <div class="dealer-info">
-                        <span class="dealer-label">Dealer ID:</span>
+                        <span class="dealer-label">Dealer</span>
                         <span class="dealer-id" id="currentDealerId">dealer001</span>
                     </div>
                 </div>
@@ -30,25 +34,16 @@
                 <!-- Stats Dashboard -->
                 <section class="stats-section">
                     <div class="stat-card">
-                        <div class="stat-icon">📊</div>
-                        <div class="stat-content">
-                            <div class="stat-value" id="totalLeads">0</div>
-                            <div class="stat-label">Total Leads</div>
-                        </div>
+                        <div class="stat-label">Total Leads</div>
+                        <div class="stat-value" id="totalLeads">0</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon">⭐</div>
-                        <div class="stat-content">
-                            <div class="stat-value" id="avgScore">0</div>
-                            <div class="stat-label">Avg Score</div>
-                        </div>
+                        <div class="stat-label">Average Score</div>
+                        <div class="stat-value" id="avgScore">0</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon">🎯</div>
-                        <div class="stat-content">
-                            <div class="stat-value" id="newLeads">0</div>
-                            <div class="stat-label">New Leads</div>
-                        </div>
+                        <div class="stat-label">New Leads</div>
+                        <div class="stat-value" id="newLeads">0</div>
                     </div>
                 </section>
 
