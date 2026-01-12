@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tekion Lead Management System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="container">
+                <div class="header-content">
+                    <h1 class="logo">
+                        <span class="logo-icon">🚗</span>
+                        Tekion Lead Manager
+                    </h1>
+                    <div class="dealer-info">
+                        <span class="dealer-label">Dealer ID:</span>
+                        <span class="dealer-id" id="currentDealerId">dealer001</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="container">
+                <!-- Stats Dashboard -->
+                <section class="stats-section">
+                    <div class="stat-card">
+                        <div class="stat-icon">📊</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="totalLeads">0</div>
+                            <div class="stat-label">Total Leads</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⭐</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="avgScore">0</div>
+                            <div class="stat-label">Avg Score</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🎯</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="newLeads">0</div>
+                            <div class="stat-label">New Leads</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Action Buttons -->
+                <section class="action-section">
+                    <button class="btn btn-primary" id="createLeadBtn">
+                        <span class="btn-icon">➕</span>
+                        Create New Lead
+                    </button>
+                    <button class="btn btn-secondary" id="refreshBtn">
+                        <span class="btn-icon">🔄</span>
+                        Refresh
+                    </button>
+                </section>
+
+                <!-- Leads Table -->
+                <section class="leads-section">
+                    <div class="section-header">
+                        <h2>Recent Leads</h2>
+                    </div>
+                    <div class="table-container">
+                        <table class="leads-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Source</th>
+                                    <th>Vehicle Interest</th>
+                                    <th>State</th>
+                                    <th>Score</th>
+                                    <th>Created</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leadsTableBody">
+                                <tr class="loading-row">
+                                    <td colspan="7" class="loading-cell">
+                                        <div class="loader"></div>
+                                        <span>Loading leads...</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- Create Lead Modal -->
+        <div id="createLeadModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Create New Lead</h2>
+                    <button class="close-btn" id="closeModalBtn">&times;</button>
+                </div>
+                <form id="createLeadForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="firstName">First Name *</label>
+                            <input type="text" id="firstName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName">Last Name *</label>
+                            <input type="text" id="lastName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email">
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone</label>
+                            <input type="tel" id="phone">
+                        </div>
+                        <div class="form-group">
+                            <label for="source">Lead Source *</label>
+                            <select id="source" required>
+                                <option value="">Select source...</option>
+                                <option value="WEBSITE">Website</option>
+                                <option value="PHONE">Phone</option>
+                                <option value="WALKIN">Walk-in</option>
+                                <option value="REFERRAL">Referral</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="vehicleMake">Vehicle Make</label>
+                            <input type="text" id="vehicleMake" placeholder="e.g., Toyota">
+                        </div>
+                        <div class="form-group">
+                            <label for="vehicleModel">Vehicle Model</label>
+                            <input type="text" id="vehicleModel" placeholder="e.g., Camry">
+                        </div>
+                        <div class="form-group">
+                            <label for="vehicleYear">Vehicle Year</label>
+                            <input type="number" id="vehicleYear" min="1990" max="2030" placeholder="2020">
+                        </div>
+                        <div class="form-group">
+                            <label for="tradeInValue">Trade-in Value ($)</label>
+                            <input type="number" id="tradeInValue" min="0" step="100" placeholder="5000">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Create Lead</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Toast Notification -->
+        <div id="toast" class="toast"></div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
+
