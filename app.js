@@ -14,6 +14,9 @@ const cancelBtn = document.getElementById('cancelBtn');
 const createLeadForm = document.getElementById('createLeadForm');
 const leadsTableBody = document.getElementById('leadsTableBody');
 const toast = document.getElementById('toast');
+const viewLeadModal = document.getElementById('viewLeadModal');
+const closeViewModalBtn = document.getElementById('closeViewModalBtn');
+const leadDetailsContent = document.getElementById('leadDetailsContent');
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
@@ -26,13 +29,20 @@ function setupEventListeners() {
     createLeadBtn.addEventListener('click', () => openModal());
     closeModalBtn.addEventListener('click', () => closeModal());
     cancelBtn.addEventListener('click', () => closeModal());
+    closeViewModalBtn.addEventListener('click', () => closeViewModal());
     refreshBtn.addEventListener('click', () => loadLeads());
     createLeadForm.addEventListener('submit', handleCreateLead);
 
-    // Close modal on outside click
+    // Close modals on outside click
     createLeadModal.addEventListener('click', (e) => {
         if (e.target === createLeadModal) {
             closeModal();
+        }
+    });
+
+    viewLeadModal.addEventListener('click', (e) => {
+        if (e.target === viewLeadModal) {
+            closeViewModal();
         }
     });
 }
@@ -45,6 +55,168 @@ function openModal() {
 
 function closeModal() {
     createLeadModal.classList.remove('show');
+}
+
+function openViewModal(leadId) {
+    const lead = allLeads.find(l => l.leadId === leadId);
+    if (!lead) return;
+
+    const score = calculateLeadScore(lead);
+    const scoreClass = getScoreClass(score);
+
+    leadDetailsContent.innerHTML = `
+        <!-- Score Section -->
+        <div class="detail-section">
+            <div class="score-display">
+                <div class="score-circle">${score}</div>
+                <div class="score-info">
+                    <h3>Lead Quality Score</h3>
+                    <p>This lead has a ${scoreClass === 'high' ? 'high' : scoreClass === 'medium' ? 'medium' : 'low'} quality score based on multiple factors</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Personal Information -->
+        <div class="detail-section">
+            <div class="detail-section-title">
+                <span class="detail-section-icon">👤</span>
+                Personal Information
+            </div>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <div class="detail-label">First Name</div>
+                    <div class="detail-value">${lead.firstName}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Last Name</div>
+                    <div class="detail-value">${lead.lastName}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Lead ID</div>
+                    <div class="detail-value" style="font-family: monospace; font-size: 12px;">${lead.leadId}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">State</div>
+                    <div class="detail-value">
+                        <span class="badge badge-${lead.state.toLowerCase()}">${lead.state}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Information -->
+        <div class="detail-section">
+            <div class="detail-section-title">
+                <span class="detail-section-icon">📞</span>
+                Contact Information
+            </div>
+            <div class="contact-info">
+                ${lead.email ? `
+                    <div class="contact-item">
+                        <div class="contact-icon">📧</div>
+                        <div class="contact-details">
+                            <div class="contact-type">Email</div>
+                            <div class="contact-value">${lead.email.address}</div>
+                        </div>
+                    </div>
+                ` : ''}
+                ${lead.phone ? `
+                    <div class="contact-item">
+                        <div class="contact-icon">📱</div>
+                        <div class="contact-details">
+                            <div class="contact-type">Phone</div>
+                            <div class="contact-value">${lead.phone.countryCode} ${lead.phone.number}</div>
+                        </div>
+                    </div>
+                ` : ''}
+                ${!lead.email && !lead.phone ? `
+                    <div class="detail-value empty">No contact information available</div>
+                ` : ''}
+            </div>
+        </div>
+
+        <!-- Lead Source & Tracking -->
+        <div class="detail-section">
+            <div class="detail-section-title">
+                <span class="detail-section-icon">📊</span>
+                Lead Source & Tracking
+            </div>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <div class="detail-label">Source</div>
+                    <div class="detail-value">
+                        <span class="source-badge source-${lead.source.toLowerCase()}">${formatSource(lead.source)}</span>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Dealer ID</div>
+                    <div class="detail-value" style="font-family: monospace;">${lead.dealerId}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Tenant ID</div>
+                    <div class="detail-value" style="font-family: monospace;">${lead.tenantId}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Site ID</div>
+                    <div class="detail-value" style="font-family: monospace;">${lead.siteId}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vehicle Interest -->
+        <div class="detail-section">
+            <div class="detail-section-title">
+                <span class="detail-section-icon">🚗</span>
+                Vehicle Interest
+            </div>
+            ${lead.vehicleInterest ? `
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <div class="detail-label">Make</div>
+                        <div class="detail-value">${lead.vehicleInterest.make || '—'}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Model</div>
+                        <div class="detail-value">${lead.vehicleInterest.model || '—'}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Year</div>
+                        <div class="detail-value">${lead.vehicleInterest.year || '—'}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Trade-in Value</div>
+                        <div class="detail-value large">${lead.vehicleInterest.tradeInValue ? '$' + lead.vehicleInterest.tradeInValue.toLocaleString() : '—'}</div>
+                    </div>
+                </div>
+            ` : `
+                <div class="detail-value empty">No vehicle interest information available</div>
+            `}
+        </div>
+
+        <!-- Timestamps -->
+        <div class="detail-section">
+            <div class="detail-section-title">
+                <span class="detail-section-icon">🕐</span>
+                Timeline
+            </div>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <div class="detail-label">Created At</div>
+                    <div class="detail-value">${formatFullDate(lead.createdAt)}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Last Updated</div>
+                    <div class="detail-value">${formatFullDate(lead.updatedAt)}</div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    viewLeadModal.classList.add('show');
+}
+
+function closeViewModal() {
+    viewLeadModal.classList.remove('show');
 }
 
 // API Functions
@@ -71,7 +243,6 @@ async function loadLeads() {
 async function handleCreateLead(e) {
     e.preventDefault();
 
-    const formData = new FormData(e.target);
     const leadData = {
         dealerId: CURRENT_DEALER_ID,
         tenantId: 'tenant1',
@@ -309,11 +480,18 @@ function formatTime(dateString) {
 }
 
 function viewLeadDetails(leadId) {
-    const lead = allLeads.find(l => l.leadId === leadId);
-    if (lead) {
-        alert(`Lead Details:\n\nName: ${lead.firstName} ${lead.lastName}\nSource: ${formatSource(lead.source)}\nState: ${lead.state}\nScore: ${calculateLeadScore(lead)}\n\nFull details logged to console.`);
-        console.log('Lead Details:', lead);
-    }
+    openViewModal(leadId);
+}
+
+function formatFullDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleString('en-US', {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
 }
 
 // Toast Notification
